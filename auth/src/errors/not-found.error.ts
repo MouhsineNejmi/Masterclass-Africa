@@ -4,8 +4,7 @@ export class NotFoundError extends CustomError {
   statusCode = 404;
 
   constructor() {
-    super('Route not found');
-
+    super();
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }
 
