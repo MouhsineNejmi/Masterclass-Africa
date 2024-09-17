@@ -1,29 +1,27 @@
 'use client';
 
-// import { MASTERCLASS_AFRICA_CONSTANTS } from '@/constants';
-// import { FormGenerator } from '@/components/forms/form-generator';
+import { MASTERCLASS_AFRICA_CONSTANTS } from '@/constants';
+import { FormGenerator } from '@/components/forms/form-generator';
 import { Loader } from '@/components/global/loader';
 import { Button } from '@/components/ui/button';
-// import { useAuthSignIn } from '@/hooks/authentication';
+import { useAuthSignIn } from '@/hooks/authentication';
 
 const SignInForm = () => {
-  // const { isPending, onAuthenticateUser, register, errors } = useAuthSignIn();
+  const { isPending, onAuthenticateUser, register, fieldsErrors } =
+    useAuthSignIn();
 
   return (
-    <form
-      className='flex flex-col gap-3 mt-10'
-      // onSubmit={onAuthenticateUser}
-    >
-      {/* {MASTERCLASS_AFRICA_CONSTANTS.signInForm.map((field) => (
+    <form className='flex flex-col gap-3 mt-10' onSubmit={onAuthenticateUser}>
+      {MASTERCLASS_AFRICA_CONSTANTS.signInForm.map((field) => (
         <FormGenerator
           {...field}
           key={field.id}
           register={register}
-          errors={errors}
+          errors={fieldsErrors}
         />
-      ))} */}
+      ))}
       <Button type='submit' className='rounded-2xl'>
-        <Loader loading={false}>Sign In with Email</Loader>
+        <Loader loading={isPending}>Sign In with Email</Loader>
       </Button>
     </form>
   );

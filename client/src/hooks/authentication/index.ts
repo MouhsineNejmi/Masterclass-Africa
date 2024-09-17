@@ -6,9 +6,65 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-import { SignUpSchema } from '@/schemas/auth';
 import { useMutation } from '@tanstack/react-query';
+
+import { SignUpSchema, SignInSchema } from '@/schemas/auth';
+
+export const useAuthSignIn = () => {
+  const {
+    register,
+    formState: { errors: fieldsErrors },
+    handleSubmit,
+    reset,
+  } = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
+    mode: 'onBlur',
+  });
+
+  const router = useRouter();
+
+  const { mutate: SignIn, isPending } = useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      return await clientAxios.post('/api/users/signin', { email, password });
+    },
+    onSuccess: () => {
+      reset();
+      router.push('/');
+    },
+    onError: (error) => {
+      console.error('ERROR SIGNIN: ', error);
+    },
+  });
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      SignIn({
+        email,
+        password,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onAuthenticateUser = handleSubmit(
+    async (values) => await signIn(values.email, values.password)
+  );
+
+  return {
+    onAuthenticateUser,
+    isPending,
+    register,
+    fieldsErrors,
+    errors: [],
+  };
+};
 
 export const useAuthSignUp = () => {
   const router = useRouter();
@@ -34,9 +90,10 @@ export const useAuthSignUp = () => {
       return await clientAxios.post('/api/users/signup', { email, password });
     },
     onError: (error) => {
-      console.error('ERROR FUNCTION: ', error);
+      console.error('ERROR SIGN UP: ', error);
     },
     onSuccess: () => {
+      reset();
       router.push('/');
     },
   });
@@ -71,4 +128,23 @@ export const useAuthSignUp = () => {
     onSignUp,
     errors: [],
   };
+};
+
+export const useAuthSignOut = () => {
+  const router = useRouter();
+  const { mutate: SignOut, isPending } = useMutation({
+    mutationFn: async () => {
+      return await clientAxios.post('/api/users/signout');
+    },
+    onSuccess: () => {
+      router.push('/');
+    },
+    onError: (error) => {
+      console.log('Signout Error: ', error);
+    },
+  });
+
+  const handleSignOut = async () => SignOut();
+
+  return { isPending, handleSignOut };
 };

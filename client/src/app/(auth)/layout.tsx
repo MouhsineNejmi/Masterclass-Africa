@@ -1,18 +1,11 @@
-// import { redirect } from 'next/navigation';
-
 import BackdropGradient from '@/components/global/backdrop-gradient';
 import GlassCard from '@/components/global/glass-card';
-// import { onAuthenticatedUser } from '@/actions/auth';
 
 type Props = {
   children: React.ReactNode;
 };
 
 const AuthLayout = async ({ children }: Props) => {
-  // const user = await onAuthenticatedUser();
-
-  // if (user.status === 200) redirect('/callback/sign-in');
-
   return (
     <div className='container h-screen flex justify-center items-center'>
       <div className='flex flex-col w-full items-center py-24'>
