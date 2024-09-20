@@ -108,8 +108,6 @@ it('should update the group provided valid inputs', async () => {
       active: false,
     });
 
-  console.log('RESPONSE CREATE: ', response.body);
-
   await request(app)
     .put(`/api/groups/${response.body.id}`)
     .set('Cookie', cookie)
@@ -127,8 +125,6 @@ it('should update the group provided valid inputs', async () => {
     .get(`/api/groups/${response.body.id}`)
     .set('Cookie', signin())
     .send();
-
-  console.log('RESPONSE GET: ', groupResponse.body);
 
   expect(groupResponse.body.name).toEqual('group name 2');
   expect(groupResponse.body.category).toEqual('category 2');

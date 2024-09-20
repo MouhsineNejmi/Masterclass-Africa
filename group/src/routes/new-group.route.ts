@@ -2,6 +2,7 @@ import { requireAuth, validateRequest } from '@nmasterclass-africa/common';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import { Group } from '../models/group';
+import { Member } from '../models/member';
 
 const router = express.Router();
 
@@ -72,6 +73,12 @@ router.post(
       userId: req.currentUser!.id,
     });
     await group.save();
+
+    const member = Member.build({
+      groupId: group.id,
+      userId: req.currentUser!.id,
+    });
+    await member.save();
 
     res.status(201).send(group);
   }

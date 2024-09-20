@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import { signin } from '../../test/auth-helper';
 import { Group } from '../../models/group';
+import { Member } from '../../models/member';
 
 it('should has a route handler listening to /api/groups for post request', async () => {
   const response = await request(app).post('/api/groups').send({});
@@ -153,4 +154,26 @@ it('should create a new group with valid inputs', async () => {
 
   groups = await Group.find({});
   expect(groups.length).toEqual(1);
+});
+
+it('should create a new member when group created successfully', async () => {
+  let members = await Member.find({});
+  expect(members.length).toEqual(0);
+
+  await request(app)
+    .post('/api/groups')
+    .set('Cookie', signin())
+    .send({
+      name: 'group name',
+      category: 'category',
+      gallery: ['gallery-1'],
+      description: 'the best course in the world',
+      privacy: 'PRIVATE',
+      active: false,
+      userId: '121fsgsfg2123',
+    })
+    .expect(201);
+
+  members = await Member.find({});
+  expect(members.length).toEqual(1);
 });
